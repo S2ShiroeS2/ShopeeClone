@@ -10,6 +10,8 @@ import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
 import { useContext } from 'react'
 import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
+import pathConfig from 'src/constants/path'
 
 type FormData = Schema
 
@@ -36,7 +38,7 @@ export const Register = () => {
 			registerAccountMutation.mutate(body, {
 				onSuccess: () => {
 					setIsAuthenticated(true)
-					navigate('/')
+					navigate(pathConfig.home)
 				},
 				onError: (error) => {
 					if (isAxiosUnprocessableEntity<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
@@ -97,12 +99,14 @@ export const Register = () => {
 								errorMessage={errors?.confirm_password?.message}
 							/>
 							<div className='mt-2'>
-								<button
+								<Button
 									type='submit'
 									className='w-full rounded-full bg-blue-600 px-2 py-4 text-center uppercase text-white hover:bg-blue-700'
+									isLoading={registerAccountMutation.isLoading}
+									disabled={registerAccountMutation.isLoading}
 								>
 									Đăng ký
-								</button>
+								</Button>
 							</div>
 							<div className='mt-8 flex items-center justify-center'>
 								<span className='mr-2 text-gray-400'>Bạn đã có tài khoản? </span>

@@ -9,6 +9,8 @@ import { login } from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
 import { AppContext } from 'src/contexts/app.context'
+import Button from 'src/components/Button'
+import pathConfig from 'src/constants/path'
 
 type FormData = Omit<Schema, 'confirm_password'>
 
@@ -34,7 +36,7 @@ export const Login = () => {
 			loginMoutation.mutate(data, {
 				onSuccess: () => {
 					setIsAuthenticated(true)
-					navigate('/')
+					navigate(pathConfig.home)
 				},
 				onError: (error) => {
 					if (isAxiosUnprocessableEntity<ErrorResponse<FormData>>(error)) {
@@ -86,12 +88,14 @@ export const Login = () => {
 								errorMessage={errors.password?.message}
 							/>
 							<div className='mt-2'>
-								<button
+								<Button
 									type='submit'
-									className='w-full rounded-full bg-blue-600 px-2 py-4 text-center uppercase text-white hover:bg-blue-700'
+									className='flex w-full items-center  justify-center rounded-full bg-blue-600 px-2 py-4 text-center uppercase text-white hover:bg-blue-700'
+									isLoading={loginMoutation.isLoading}
+									disabled={loginMoutation.isLoading}
 								>
 									Đăng nhập
-								</button>
+								</Button>
 							</div>
 							<div className='mt-8 flex items-center justify-center'>
 								<span className='mr-2 text-gray-400'>Bạn chưa có tài khoản? </span>
