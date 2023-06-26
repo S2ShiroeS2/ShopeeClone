@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import InputField from 'src/components/InputField'
 import { loginSchema, Schema } from 'src/utils/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -8,10 +8,14 @@ import { useMutation } from '@tanstack/react-query'
 import { login } from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
+import { AppContext } from 'src/contexts/app.context'
 
 type FormData = Omit<Schema, 'confirm_password'>
 
 export const Login = () => {
+	const { setIsAuthenticated } = useContext(AppContext)
+	const navigate = useNavigate()
+
 	const {
 		register,
 		setError,
@@ -27,11 +31,10 @@ export const Login = () => {
 
 	const onSubmit = handleSubmit(
 		(data) => {
-			console.log('data submit: >>', data)
-
 			loginMoutation.mutate(data, {
-				onSuccess: (data) => {
-					console.log('Success: >>', data)
+				onSuccess: () => {
+					setIsAuthenticated(true)
+					navigate('/')
 				},
 				onError: (error) => {
 					if (isAxiosUnprocessableEntity<ErrorResponse<FormData>>(error)) {

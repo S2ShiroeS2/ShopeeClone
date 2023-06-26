@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import InputField from 'src/components/InputField'
 import omit from 'lodash/omit'
 import { schema, Schema } from 'src/utils/rules'
@@ -8,10 +8,15 @@ import { useMutation } from '@tanstack/react-query'
 import { registerAccount } from 'src/apis/auth.api'
 import { isAxiosUnprocessableEntity } from 'src/utils/utils'
 import { ErrorResponse } from 'src/types/utils.type'
+import { useContext } from 'react'
+import { AppContext } from 'src/contexts/app.context'
 
 type FormData = Schema
 
 export const Register = () => {
+	const { setIsAuthenticated } = useContext(AppContext)
+	const navigate = useNavigate()
+
 	const {
 		register,
 		handleSubmit,
@@ -29,8 +34,9 @@ export const Register = () => {
 		(data) => {
 			const body = omit(data, ['confirm_password'])
 			registerAccountMutation.mutate(body, {
-				onSuccess: (data) => {
-					console.log('Success: >>', data)
+				onSuccess: () => {
+					setIsAuthenticated(true)
+					navigate('/')
 				},
 				onError: (error) => {
 					if (isAxiosUnprocessableEntity<ErrorResponse<Omit<FormData, 'confirm_password'>>>(error)) {
