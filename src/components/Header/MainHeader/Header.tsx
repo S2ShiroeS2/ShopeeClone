@@ -3,10 +3,11 @@ import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { logout } from 'src/apis/auth.api'
 import Popover from 'src/components/Popover'
+import pathConfig from 'src/constants/path'
 import { AppContext } from 'src/contexts/app.context'
 
 const Header = () => {
-	const { isAuthenticated, setIsAuthenticated } = useContext(AppContext)
+	const { isAuthenticated, setIsAuthenticated, profile } = useContext(AppContext)
 
 	const logoutMoutation = useMutation({
 		mutationFn: () => logout(),
@@ -22,7 +23,7 @@ const Header = () => {
 	return (
 		<header className='sticky top-0 z-50'>
 			<div className='flex h-20 items-center justify-between border-b-2 px-9 py-2 bg-blend-soft-light shadow-sm transition-transform duration-300'>
-				<Link to='/'>
+				<Link to={pathConfig.home}>
 					<span className='text-3xl font-semibold text-blue-600'>Chamomile </span>
 				</Link>
 				<div className='mx-auto h-full w-2/4 overflow-hidden px-10 lg:block'>
@@ -102,7 +103,7 @@ const Header = () => {
 							<div className='border-stroke rounded-10 relative border bg-white shadow-sm '>
 								<div className='flex flex-col justify-start px-3 py-2'>
 									<Link
-										to='/profile'
+										to={pathConfig.profile}
 										className='px-3 py-2 text-center hover:bg-slate-100 hover:text-blue-600'
 									>
 										Tài khoản của tôi
@@ -138,16 +139,16 @@ const Header = () => {
 								d='M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z'
 							/>
 						</svg>
-						<span className='mx-1'>HungTQ</span>
+						<span className='mx-1'>{profile?.name}</span>
 					</Popover>
 				)}
 				{!isAuthenticated && (
 					<div className='flex items-center'>
-						<Link to='/register' className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
+						<Link to={pathConfig.register} className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
 							Đăng ký
 						</Link>
 						<div className='h-4 border-r-[1px] border-r-white/40 bg-slate-700'></div>
-						<Link to='/login' className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
+						<Link to={pathConfig.login} className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
 							Đăng nhập
 						</Link>
 					</div>
