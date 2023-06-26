@@ -1,8 +1,24 @@
-import React from 'react'
+import { useMutation } from '@tanstack/react-query'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
+import { logout } from 'src/apis/auth.api'
 import Popover from 'src/components/Popover'
+import { AppContext } from 'src/contexts/app.context'
 
 const Header = () => {
+	const { isAuthenticated, setIsAuthenticated } = useContext(AppContext)
+
+	const logoutMoutation = useMutation({
+		mutationFn: () => logout(),
+		onSuccess: () => {
+			setIsAuthenticated(false)
+		}
+	})
+
+	const handleLogout = () => {
+		logoutMoutation.mutate()
+	}
+
 	return (
 		<header className='sticky top-0 z-50'>
 			<div className='flex h-20 items-center justify-between border-b-2 px-9 py-2 bg-blend-soft-light shadow-sm transition-transform duration-300'>
@@ -79,43 +95,63 @@ const Header = () => {
 						<path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
 					</svg>
 				</Popover>
-				<Popover
-					className='ml-6 flex shrink-0 cursor-pointer items-center text-base font-normal text-slate-700 hover:text-blue-600'
-					renderPopover={
-						<div className='border-stroke rounded-10 relative border bg-white shadow-sm '>
-							<div className='flex flex-col justify-start px-3 py-2'>
-								<Link to='/' className='px-3 py-2 text-center hover:bg-slate-100 hover:text-blue-600'>
-									Tài khoản của tôi
-								</Link>
-								<Link
-									to='/'
-									className='mt-2 px-3 py-2 text-center hover:bg-slate-100 hover:text-blue-600'
-								>
-									Đơn mua
-								</Link>
-								<button className='mt-2 px-3 py-2 hover:bg-slate-100 hover:text-blue-600'>
-									Đăng xuất
-								</button>
+				{isAuthenticated && (
+					<Popover
+						className='ml-6 flex shrink-0 cursor-pointer items-center text-base font-normal text-slate-700 hover:text-blue-600'
+						renderPopover={
+							<div className='border-stroke rounded-10 relative border bg-white shadow-sm '>
+								<div className='flex flex-col justify-start px-3 py-2'>
+									<Link
+										to='/profile'
+										className='px-3 py-2 text-center hover:bg-slate-100 hover:text-blue-600'
+									>
+										Tài khoản của tôi
+									</Link>
+									<Link
+										to='/'
+										className='mt-2 px-3 py-2 text-center hover:bg-slate-100 hover:text-blue-600'
+									>
+										Đơn mua
+									</Link>
+									<button
+										type='button'
+										onClick={handleLogout}
+										className='mt-2 px-3 py-2 hover:bg-slate-100 hover:text-blue-600'
+									>
+										Đăng xuất
+									</button>
+								</div>
 							</div>
-						</div>
-					}
-				>
-					<svg
-						xmlns='http://www.w3.org/2000/svg'
-						fill='none'
-						viewBox='0 0 24 24'
-						strokeWidth={1.5}
-						stroke='currentColor'
-						className='h-5 w-5'
+						}
 					>
-						<path
-							strokeLinecap='round'
-							strokeLinejoin='round'
-							d='M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z'
-						/>
-					</svg>
-					<span className='mx-1'>HungTQ</span>
-				</Popover>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'
+							strokeWidth={1.5}
+							stroke='currentColor'
+							className='h-5 w-5'
+						>
+							<path
+								strokeLinecap='round'
+								strokeLinejoin='round'
+								d='M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z'
+							/>
+						</svg>
+						<span className='mx-1'>HungTQ</span>
+					</Popover>
+				)}
+				{!isAuthenticated && (
+					<div className='flex items-center'>
+						<Link to='/register' className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
+							Đăng ký
+						</Link>
+						<div className='h-4 border-r-[1px] border-r-white/40 bg-slate-700'></div>
+						<Link to='/login' className='mx-3 capitalize text-slate-700 hover:text-blue-600'>
+							Đăng nhập
+						</Link>
+					</div>
+				)}
 
 				<Popover
 					className='ml-6 flex shrink-0 cursor-pointer items-center text-base font-normal text-slate-700 hover:text-blue-600'
